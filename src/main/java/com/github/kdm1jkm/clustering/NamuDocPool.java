@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 public class NamuDocPool {
     private final List<NamuDoc> docs;
+    private double[][] similarity = null;
 
     public NamuDocPool(int randomSize, String... docs) throws IOException {
         this.docs = new ArrayList<>();
@@ -27,6 +28,8 @@ public class NamuDocPool {
     }
 
     public double[][] getAllCosineSimilarity() throws IOException {
+        if (similarity != null) return similarity;
+
         int len = docs.size();
         double[][] result = new double[len][];
 
@@ -42,6 +45,8 @@ public class NamuDocPool {
                 }
             }
         }
+
+        similarity = result;
 
         return result;
     }
