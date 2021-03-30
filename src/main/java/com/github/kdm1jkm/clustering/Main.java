@@ -1,27 +1,21 @@
 package com.github.kdm1jkm.clustering;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.*;
+import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
-        ExecutorService executorService = Executors.newCachedThreadPool();
-        List<Callable<Map<String, Integer>>> tasks = new ArrayList<>();
-
-        for (String keyWord : new String[]{"밥", "나무위키", "에러", "사과", "죽"}) {
-            NamuDoc namuDoc = new NamuDoc(keyWord);
-            tasks.add(namuDoc::analyze);
+    public static void main(String[] args) throws InterruptedException, IOException {
+        NamuDocPool namuDocs = new NamuDocPool(0, "밥", "죽", "사과", "바나나", "에러");
+        namuDocs.analyzeAll();
+        for (NamuDoc doc : namuDocs.getDocs()) {
+            System.out.println(doc.getKeyWord());
         }
-
-        List<Future<Map<String, Integer>>> results = executorService.invokeAll(tasks);
-
-        for (Future<Map<String, Integer>> result : results) {
-            Map<String, Integer> stringIntegerMap = result.get();
-            System.out.println(stringIntegerMap);
+        System.out.println("==========");
+        for (double[] line : namuDocs.getAllCosineSimilarity()) {
+            for (double value : line) {
+                System.out.print(value);
+                System.out.print("\t");
+            }
+            System.out.println();
         }
-
-        executorService.shutdown();
     }
 }
