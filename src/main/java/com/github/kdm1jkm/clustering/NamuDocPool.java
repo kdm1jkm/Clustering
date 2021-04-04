@@ -1,14 +1,15 @@
 package com.github.kdm1jkm.clustering;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Semaphore;
 
 public class NamuDocPool {
     private final List<NamuDoc> docs;
+    public int threadNum = 5;
     private double[][] similarity = null;
 
     public NamuDocPool(int randomSize, String... docs) throws IOException {
@@ -19,12 +20,50 @@ public class NamuDocPool {
         }
     }
 
-    public void analyzeAll() throws InterruptedException {
-        ExecutorService executorService = Executors.newCachedThreadPool();
+    public NamuDocPool(NamuDoc... namuDocs) {
+        docs = Arrays.asList(namuDocs.clone());
+    }
 
-        executorService.invokeAll(docs.stream().<Callable<Map<String, Integer>>>map(namuDoc -> namuDoc::analyze).collect(Collectors.toList()));
+    public void analyzeAll() {
+        Semaphore semaphore = new Semaphore(threadNum);
 
-        executorService.shutdown();
+        List<Thread> threads = new ArrayList<>();
+        List<NamuDoc> fail = new ArrayList<>();
+
+        for (NamuDoc doc : docs) {
+            Thread thread = new Thread(() -> {
+                try {
+                    semaphore.acquire();
+                    doc.getContent();
+                } catch (IOException e) {
+                    fail.add(doc);
+                } catch (InterruptedException e) {
+                    return;
+                }
+                semaphore.release();
+            });
+
+            thread.start();
+            threads.add(thread);
+        }
+
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        fail.forEach(docs::remove);
+
+        for (NamuDoc doc : docs) {
+            try {
+                doc.analyze();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public double[][] getAllCosineSimilarity() throws IOException {
