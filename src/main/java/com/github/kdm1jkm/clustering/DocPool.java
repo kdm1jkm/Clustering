@@ -16,13 +16,11 @@ public class DocPool {
     }
 
     public void registerDoc(Doc doc) {
-        docs.forEach(doc1->{
-            similarities.add(doc.getWordVec().calcCosine(doc1.getWordVec()));
-        });
+        docs.forEach(doc1-> similarities.add(doc.getWordVec().calcCosineDistance(doc1.getWordVec())));
         docs.add(doc);
     }
 
-    public double getCosineSimilarity(int index1, int index2) {
+    public double getCosineDistance(int index1, int index2) {
         if (index1 == index2)
             return 1;
 
@@ -32,7 +30,7 @@ public class DocPool {
         return similarities.get((idx1 - 1) * idx1 / 2 + idx2);
     }
 
-    public double getCosineSimilarity(Doc doc1, Doc doc2) {
+    public double getCosineDistance(Doc doc1, Doc doc2) {
         int index1 = docs.indexOf(doc1);
         int index2 = docs.indexOf(doc2);
 
@@ -40,6 +38,6 @@ public class DocPool {
             throw new IllegalArgumentException();
         }
 
-        return getCosineSimilarity(index1, index2);
+        return getCosineDistance(index1, index2);
     }
 }

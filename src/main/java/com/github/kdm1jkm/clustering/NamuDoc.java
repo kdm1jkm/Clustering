@@ -3,18 +3,15 @@ package com.github.kdm1jkm.clustering;
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
-import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class NamuDoc implements Doc {
     private final String url;
@@ -28,13 +25,16 @@ public class NamuDoc implements Doc {
         wordVec = new WordVec(analyze());
     }
 
-    public static NamuDoc getRandomDoc() throws IOException {
-        Document doc = Jsoup.connect("https://namu.wiki/random").get();
-        String title = doc.select("title").text();
-        NamuDoc namuDoc = new NamuDoc(title.substring(0, title.length() - 7));
-        namuDoc.content = extractTextFromDocument(doc);
-
-        return namuDoc;
+    public static NamuDoc getRandomDoc() {
+        try {
+            Document doc = Jsoup.connect("https://namu.wiki/random").userAgent("Mozilla").get();
+            String title = doc.select("title").text();
+            NamuDoc namuDoc = new NamuDoc(title.substring(0, title.length() - 7));
+            namuDoc.content = extractTextFromDocument(doc);
+            return namuDoc;
+        } catch (IOException e) {
+            throw new IllegalStateException();
+        }
     }
 
     private static String extractTextFromDocument(Document doc) {
@@ -47,7 +47,7 @@ public class NamuDoc implements Doc {
         return builder.toString();
     }
 
-    public String getWebpage()  {
+    public String getWebpage() {
         if (content != null)
             return content;
 
@@ -86,8 +86,7 @@ public class NamuDoc implements Doc {
 
     @Override
     public String toString() {
-        return analyze().entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .collect(Collectors.toList()).toString();
+        return keyWord;
     }
 
     @Override
