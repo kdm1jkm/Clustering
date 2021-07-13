@@ -1,5 +1,11 @@
 package com.github.kdm1jkm.clustering;
 
+import com.github.kdm1jkm.clustering.doc.Doc;
+import com.github.kdm1jkm.clustering.doc.DocPool;
+import com.github.kdm1jkm.clustering.node.BinaryNode;
+import com.github.kdm1jkm.clustering.node.DocNode;
+import com.github.kdm1jkm.clustering.node.Node;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;

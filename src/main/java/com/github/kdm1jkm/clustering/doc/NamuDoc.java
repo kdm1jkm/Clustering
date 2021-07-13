@@ -1,5 +1,6 @@
-package com.github.kdm1jkm.clustering;
+package com.github.kdm1jkm.clustering.doc;
 
+import com.github.kdm1jkm.clustering.WordVec;
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;

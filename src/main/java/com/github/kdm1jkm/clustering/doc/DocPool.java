@@ -1,4 +1,6 @@
-package com.github.kdm1jkm.clustering;
+package com.github.kdm1jkm.clustering.doc;
+
+import com.github.kdm1jkm.clustering.doc.Doc;
 
 import java.util.ArrayList;
 import java.util.List;
