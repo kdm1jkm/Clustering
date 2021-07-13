@@ -6,3 +6,4 @@ target
 .vscode
 .gradle
 *.iml
+out
