@@ -16,15 +16,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class NamuDoc {
+public class NamuDoc implements Doc {
     private final String url;
     private final String keyWord;
-    private Map<String, Integer> analyzedData = null;
-    private String content = null;
+    private final WordVec wordVec;
+    private String content;
 
     public NamuDoc(String keyWord) {
         url = String.format("https://namu.wiki/w/%s", keyWord);
         this.keyWord = keyWord;
+        wordVec = new WordVec(analyze());
     }
 
     public static NamuDoc getRandomDoc() throws IOException {
@@ -46,24 +47,30 @@ public class NamuDoc {
         return builder.toString();
     }
 
-    public String getContent() throws IOException {
-        if (content != null) return content;
+    public String getWebpage()  {
+        if (content != null)
+            return content;
 
         Document doc;
         try {
-            doc = Jsoup.connect(url).get();
-        } catch (HttpStatusException e) {
+            doc = Jsoup
+                    .connect(url)
+                    .userAgent("Mozilla")
+                    .get();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
             throw new IllegalStateException(String.format("Provided keyWord %s is not valid.", keyWord));
         }
         return content = extractTextFromDocument(doc);
     }
 
-    public Map<String, Integer> analyze() throws IOException {
-        if (analyzedData != null) return analyzedData;
-
-        analyzedData = new HashMap<>();
+    private Map<String, Integer> analyze() {
+        Map<String, Integer> analyzedData = new HashMap<>();
         Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
-        KomoranResult komoranResult = komoran.analyze(getContent());
+        String webpage;
+        webpage = getWebpage();
+        KomoranResult komoranResult = komoran.analyze(webpage);
         List<String> morphs = komoranResult.getMorphesByTags("NNG");
 
         for (String morph : morphs) {
@@ -73,32 +80,18 @@ public class NamuDoc {
         return analyzedData;
     }
 
-    public double getCosineSimilarity(NamuDoc other) throws IOException {
-        if (other == this) return 1;
-        int sum = 0;
-        Map<String, Integer> analyzed1 = analyze();
-        Map<String, Integer> analyzed2 = other.analyze();
-
-        for (String key : analyzed1.keySet()) {
-            sum += analyzed1.get(key) * analyzed2.getOrDefault(key, 0);
-        }
-
-        double len1 = Math.sqrt(analyzed1.values().stream().mapToInt(num -> num * num).sum());
-        double len2 = Math.sqrt(analyzed2.values().stream().mapToInt(num -> num * num).sum());
-
-        return sum / (len1 * len2);
-    }
-
     public String getKeyWord() {
         return keyWord;
     }
 
     @Override
     public String toString() {
-        try {
-            return analyze().entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).collect(Collectors.toList()).toString();
-        } catch (IOException e) {
-            return "";
-        }
+        return analyze().entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toList()).toString();
+    }
+
+    @Override
+    public WordVec getWordVec() {
+        return wordVec;
     }
 }
