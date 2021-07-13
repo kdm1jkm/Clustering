@@ -7,20 +7,20 @@ import com.github.kdm1jkm.clustering.node.DocNode;
 import com.github.kdm1jkm.clustering.node.Node;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
         DocPool docPool = new DocPool();
         List<Callable<Boolean>> load = new ArrayList<>();
 
-        Stream.of("밥", "죽", "바나나", "사과", "에러", "떡", "시계", "책", "종이", "커피", "컴퓨터", "CASIO").forEach(word -> load.add(() -> {
+        Arrays.stream(args).forEach(word -> load.add(() -> {
                     docPool.registerDoc(new NamuDoc(word));
                     System.out.println("Complete " + word + "!");
                     return true;
