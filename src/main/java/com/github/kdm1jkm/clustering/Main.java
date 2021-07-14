@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
+        System.setProperty("https.protocols", "TLSv1.2");
         DocPool docPool = new DocPool();
         List<Callable<Boolean>> load = new ArrayList<>();
 
