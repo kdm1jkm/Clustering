@@ -127,9 +127,10 @@ public class Clusterer {
         }
 
         rootNode = connectNodes.get(connectNodes.size() - 1);
+        System.out.println(rootNode);
         if (index == connectNodes.size() - 1) return;
 
-        Set<Node> nodeToSeparate = new HashSet<>(connectNodes.subList(index + 1, connectNodes.size()));
+        Set<Node> nodeToSeparate = new HashSet<>(connectNodes.subList(connectNodes.size() - index, connectNodes.size()));
         AtomicInteger seperated = new AtomicInteger();
 
         do {

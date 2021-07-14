@@ -27,4 +27,12 @@ public class BinaryNode implements Node{
     public List<Node> getChildNode() {
         return Arrays.asList(left, right);
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"left\": " + left +
+                ", \"right\": " + right +
+                '}';
+    }
 }

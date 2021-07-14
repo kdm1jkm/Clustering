@@ -21,4 +21,11 @@ public class DocNode implements Node {
     public List<Node> getChildNode() {
         return Collections.emptyList();
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"doc\": \"" + doc +
+                "\"}";
+    }
 }
