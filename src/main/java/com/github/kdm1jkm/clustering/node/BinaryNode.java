@@ -8,10 +8,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class BinaryNode implements Node{
+public class BinaryNode implements Node {
     public final Node left, right;
 
-    public BinaryNode( Node left, Node right) {
+    public BinaryNode(Node left, Node right) {
         Objects.requireNonNull(left);
         Objects.requireNonNull(right);
         this.left = left;

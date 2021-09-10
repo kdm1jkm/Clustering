@@ -31,19 +31,17 @@ public class Clusterer {
     public final DocPool docPool;
     private final NodeComparer nodeComparer;
     private final List<Node> connectNodes = new ArrayList<>();
-
-    public List<Double> getScores() {
-        return scores;
-    }
-
     private final List<Double> scores = new ArrayList<>();
     private List<Node> nodes = new ArrayList<>();
     private Node rootNode;
-
     public Clusterer(DocPool docPool, NodeComparer nodeComparer) {
         this.docPool = docPool;
         this.nodeComparer = nodeComparer;
         nodes.addAll(docPool.getDocs().stream().map(DocNode::new).collect(Collectors.toList()));
+    }
+
+    public List<Double> getScores() {
+        return scores;
     }
 
     public List<Node> getNodes() {

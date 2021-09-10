@@ -1,7 +1,5 @@
 package com.github.kdm1jkm.clustering.doc;
 
-import com.github.kdm1jkm.clustering.doc.Doc;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +16,7 @@ public class DocPool {
     }
 
     public void registerDoc(Doc doc) {
-        docs.forEach(doc1-> similarities.add(doc.getWordVec().calcCosineDistance(doc1.getWordVec())));
+        docs.forEach(doc1 -> similarities.add(doc.getWordVec().calcCosineDistance(doc1.getWordVec())));
         docs.add(doc);
     }
 
